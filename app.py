@@ -3,10 +3,9 @@ import requests
 import json
 import time
 from PIL import Image
-import io
+import os
 
 # ===================== 讯飞星火配置 =====================
-# 注意：实际部署时，这些密钥应该放在环境变量或配置文件中
 APP_ID = "9c9635e5"
 API_KEY = "60792482aeaea33fac508ea5e195a9da"
 API_SECRET = "NzAzOWUwYmRlZWY5OTY2YTBhZTg5YTIw"
@@ -39,18 +38,31 @@ if "messages" not in st.session_state:
 if "is_responding" not in st.session_state:
     st.session_state.is_responding = False
 
+
+def load_logo():
+    """加载固定 Logo"""
+    logo_path = "logo.png"
+    if os.path.exists(logo_path):
+        try:
+            img = Image.open(logo_path)
+            return img
+        except Exception as e:
+            st.warning(f"加载 Logo 失败: {e}")
+    return None
+
+
 # ===================== 侧边栏 =====================
 with st.sidebar:
-    # 自定义 Logo 区域
+    # 固定 Logo 区域 - 放大的版本
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        # 支持上传自定义 Logo
-        uploaded_logo = st.file_uploader("上传 Logo", type=['png', 'jpg', 'jpeg'], key="logo_uploader")
-        if uploaded_logo is not None:
-            logo_img = Image.open(uploaded_logo)
-            st.image(logo_img, width=80)
+        logo_img = load_logo()
+        if logo_img is not None:
+            # 将宽度从 100 改为 180，让 Logo 更大
+            st.image(logo_img, width=280)
         else:
-            st.markdown("# 🤖 TF AI")
+            # 没有图片时，文字也放大
+            st.markdown("<h1 style='text-align: center;'>🤖 TF AI</h1>", unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -76,7 +88,7 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # 历史对话列表（简化版）
+    # 历史对话列表
     st.markdown("### 📝 历史对话")
     history_items = ["Python编程问题", "机器学习入门", "前端开发技巧", "数据分析方法"]
     for item in history_items:
@@ -94,7 +106,6 @@ with st.sidebar:
         st.markdown("""
         - 💡 **Ctrl+Enter** 快速发送消息
         - 🔄 **新对话** 按钮清空聊天记录
-        - 🎨 支持上传自定义 Logo
         - 🚀 自动重试机制，稳定可靠
         """)
 
@@ -111,7 +122,7 @@ for msg in st.session_state.messages:
         with st.chat_message("assistant", avatar="🤖"):
             st.markdown(msg["content"])
 
-# 欢迎消息（如果没有对话记录）
+# 欢迎消息
 if not st.session_state.messages:
     with st.chat_message("assistant", avatar="🤖"):
         st.markdown(f"""
@@ -131,7 +142,6 @@ if not st.session_state.messages:
         """)
 
 # ===================== 输入区域 =====================
-# 获取用户输入
 user_input = st.chat_input("输入你的问题... (Ctrl+Enter 发送)")
 
 
@@ -143,10 +153,8 @@ def get_response(user_message):
         auth = f"{API_KEY}:{API_SECRET}"
         headers = {"Authorization": f"Bearer {auth}", "Content-Type": "application/json"}
 
-        # 构建消息历史（保留最近10条）
         recent_messages = st.session_state.messages[-10:] if len(
             st.session_state.messages) > 10 else st.session_state.messages
-        # 添加当前用户消息
         messages_for_api = recent_messages + [{"role": "user", "content": user_message}]
 
         payload = {
@@ -176,7 +184,6 @@ def get_response(user_message):
 
 # 处理用户输入
 if user_input and not st.session_state.is_responding:
-    # 标记正在响应
     st.session_state.is_responding = True
 
     # 添加用户消息
@@ -191,16 +198,10 @@ if user_input and not st.session_state.is_responding:
         message_placeholder = st.empty()
         message_placeholder.markdown("🤔 思考中...")
 
-        # 获取响应
         response = get_response(user_input)
-
-        # 更新消息
         message_placeholder.markdown(response)
-
-        # 保存 AI 响应
         st.session_state.messages.append({"role": "assistant", "content": response})
 
-    # 重置响应状态
     st.session_state.is_responding = False
     st.rerun()
     #streamlit run F:\taifengAI\.venv\app.py //终端输入
