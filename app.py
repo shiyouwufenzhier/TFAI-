@@ -4,6 +4,8 @@ import json
 import time
 from PIL import Image
 import os
+import base64
+from io import BytesIO
 
 # ===================== 讯飞星火配置 =====================
 APP_ID = "9c9635e5"
@@ -39,30 +41,39 @@ if "is_responding" not in st.session_state:
     st.session_state.is_responding = False
 
 
-def load_logo():
-    """加载固定 Logo"""
+def get_image_base64(image_path):
+    """将图片转换为 base64 编码"""
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
+
+def load_logo_html():
+    """使用 HTML/CSS 加载 Logo，可以控制更大尺寸"""
     logo_path = "logo.png"
     if os.path.exists(logo_path):
-        try:
-            img = Image.open(logo_path)
-            return img
-        except Exception as e:
-            st.warning(f"加载 Logo 失败: {e}")
-    return None
+        # 将图片转为 base64
+        img_base64 = get_image_base64(logo_path)
+        # 使用 HTML 显示，可以自由控制大小
+        logo_html = f"""
+        <div style="text-align: center; padding: 10px 0;">
+            <img src="data:image/png;base64,{img_base64}" style="width: 200px; border-radius: 10px;">
+        </div>
+        """
+        return logo_html
+    else:
+        # 没有图片时显示大号文字
+        return """
+        <div style="text-align: center; padding: 10px 0;">
+            <div style="font-size: 80px;">🤖</div>
+            <div style="font-size: 40px; font-weight: bold; color: #10a37f;">TF AI</div>
+        </div>
+        """
 
 
 # ===================== 侧边栏 =====================
 with st.sidebar:
-    # 固定 Logo 区域 - 放大的版本
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        logo_img = load_logo()
-        if logo_img is not None:
-            # 将宽度从 100 改为 180，让 Logo 更大
-            st.image(logo_img, width=280)
-        else:
-            # 没有图片时，文字也放大
-            st.markdown("<h1 style='text-align: center;'>🤖 TF AI</h1>", unsafe_allow_html=True)
+    # 使用 HTML 显示大 Logo
+    st.markdown(load_logo_html(), unsafe_allow_html=True)
 
     st.markdown("---")
 
