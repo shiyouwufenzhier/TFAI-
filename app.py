@@ -59,7 +59,7 @@ with st.sidebar:
         "选择模型",
         options=list(MODEL_CONFIG.keys()),
         format_func=lambda x: MODEL_CONFIG[x]['desc'],
-        index=3  # 默认选择 x2
+        index=4  # 默认选择 x2
     )
 
     # 显示当前模型详情
