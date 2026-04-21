@@ -47,6 +47,15 @@ def get_image_base64(image_path):
         return base64.b64encode(img_file.read()).decode()
 
 
+def load_avatar_base64():
+    """加载 AI 头像"""
+    avatar_path = "avatar.png"
+    if os.path.exists(avatar_path):
+        with open(avatar_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    return None
+
+
 def load_logo_html():
     """使用 HTML/CSS 加载 Logo，可以控制更大尺寸"""
     logo_path = "logo.png"
@@ -69,6 +78,14 @@ def load_logo_html():
             <div style="font-size: 40px; font-weight: bold; color: #10a37f;">TF AI</div>
         </div>
         """
+
+
+# 加载 AI 头像
+avatar_base64 = load_avatar_base64()
+if avatar_base64:
+    AI_AVATAR = f"data:image/png;base64,{avatar_base64}"
+else:
+    AI_AVATAR = "🤖"  # 如果没有 avatar.png 文件，使用 emoji
 
 
 # ===================== 侧边栏 =====================
@@ -131,12 +148,12 @@ for msg in st.session_state.messages:
         with st.chat_message("user", avatar="👤"):
             st.markdown(msg["content"])
     else:
-        with st.chat_message("assistant", avatar="🤖"):
+        with st.chat_message("assistant", avatar=AI_AVATAR):
             st.markdown(msg["content"])
 
 # 欢迎消息
 if not st.session_state.messages:
-    with st.chat_message("assistant", avatar="🤖"):
+    with st.chat_message("assistant", avatar=AI_AVATAR):
         st.markdown(f"""
         👋 欢迎使用 TF AI 智能助手！
 
@@ -206,7 +223,7 @@ if user_input and not st.session_state.is_responding:
         st.markdown(user_input)
 
     # 显示 AI 思考状态
-    with st.chat_message("assistant", avatar="🤖"):
+    with st.chat_message("assistant", avatar=AI_AVATAR):
         message_placeholder = st.empty()
         message_placeholder.markdown("🤔 思考中...")
 
@@ -216,4 +233,3 @@ if user_input and not st.session_state.is_responding:
 
     st.session_state.is_responding = False
     st.rerun()
-    #streamlit run F:\taifengAI\.venv\app.py //终端输入
