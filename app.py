@@ -131,7 +131,7 @@ for msg in st.session_state.messages:
         with st.chat_message("user", avatar="👤"):
             st.markdown(msg["content"])
     else:
-        with st.chat_message("assistant", avatar="T"):
+        with st.chat_message("assistant", avatar="🤖"):
             st.markdown(msg["content"])
 
 # 欢迎消息
