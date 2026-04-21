@@ -56,7 +56,7 @@ def load_logo_html():
         # 使用 HTML 显示，可以自由控制大小
         logo_html = f"""
         <div style="text-align: center; padding: 10px 0;">
-            <img src="data:image/png;base64,{img_base64}" style="width: 720px; margin-left: auto; margin-right: 0; border-radius: 10px;">
+            <img src="data:image/png;base64,{img_base64}" style="width: 180px; border-radius: 10px;">
             <div style="font-size: 40px; font-weight: bold; color: #10a37f;">TF AI</div>
         </div>
         """
