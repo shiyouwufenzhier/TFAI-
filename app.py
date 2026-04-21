@@ -11,11 +11,11 @@ from io import BytesIO
 APP_ID = "9c9635e5"
 API_KEY = "60792482aeaea33fac508ea5e195a9da"
 API_SECRET = "NzAzOWUwYmRlZWY5OTY2YTBhZTg5YTIw"
-logo_path = "logo.png"
+
 # ===================== 页面配置 =====================
 st.set_page_config(
     page_title="TF AI 智能助手",
-    page_icon=logo_path,
+    page_icon="🐱",
     layout="wide",
     initial_sidebar_state="expanded"
 )
