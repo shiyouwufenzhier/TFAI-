@@ -120,9 +120,9 @@ with st.sidebar:
         - 🔄 **新对话** 按钮清空聊天记录
         - 🚀 自动重试机制，稳定可靠
         """)
-logo_path = "logo.png"
+
 # ===================== 主聊天区域 =====================
-st.markdown(logo_path,"# TF AI 智能助手")
+st.markdown("# 🤖 TF AI 智能助手")
 st.markdown("---")
 
 # 显示聊天记录
