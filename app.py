@@ -85,7 +85,7 @@ avatar_base64 = load_avatar_base64()
 if avatar_base64:
     AI_AVATAR = f"data:image/png;base64,{avatar_base64}"
 else:
-    AI_AVATAR = "🤖"  # 如果没有 avatar.png 文件，使用 emoji
+    AI_AVATAR = "T"  # 如果没有 avatar.png 文件，使用 emoji
 
 
 # ===================== 侧边栏 =====================
